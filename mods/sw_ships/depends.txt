@@ -1,0 +1,5 @@
+sw_blasters
+sw_core_items
+multidimensions
+tnt?
+mcl_explosions?
