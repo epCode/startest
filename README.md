@@ -1,5 +1,3 @@
 Star Test
 
-This is a game that intends to be a Star Wars game
-that is as realistic as possible of the unrealistic
-Star Wars saga.
+this is a game for minetest that will be based of of Star Wars
