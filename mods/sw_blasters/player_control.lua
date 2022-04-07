@@ -101,6 +101,7 @@ minetest.register_globalstep(function(dtime)
 		end
 
     local control = player:get_player_control()
+
     local wieldeditem = player:get_wielded_item()
     local type = ""
 

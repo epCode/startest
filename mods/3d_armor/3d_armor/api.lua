@@ -349,8 +349,47 @@ armor.update_player_visuals = function(self, player)
 	end
 	local name = player:get_player_name()
 	if self.textures[name] then
+		local privs = minetest.get_player_privs(name)
+		local player_skin_texture = "blank.png"
+		if privs.GAMEjedi then
+			player_skin_texture = "player_species_jedi_skin.png"
+		elseif privs.GAMEmale then
+			if privs.GAMEzabrak then
+				player_skin_texture = "player_species_zabrak_skin.png"
+				player_api.set_model(player, "3d_armor_character_zabrak_male.b3d")
+			elseif privs.GAMEtwilek then
+				player_skin_texture = "player_species_twilek_skin.png"
+				player_api.set_model(player, "3d_armor_character_twilek_male.b3d")
+			elseif privs.GAMEman then
+				player_skin_texture = "player_species_man_skin.png"
+				player_api.set_model(player, "3d_armor_character.b3d")
+			elseif privs.GAMErodian then
+				player_skin_texture = "player_species_rodian_skin.png"
+				player_api.set_model(player, "3d_armor_character_rodian_male.b3d")
+			elseif privs.GAMEtogruta then
+				player_skin_texture = "player_species_togruta_skin.png"
+				player_api.set_model(player, "3d_armor_character_togruta_male.b3d")
+			end
+		elseif privs.GAMEfemale then
+			if privs.GAMEzabrak then
+				player_skin_texture = "player_species_zabrak_skinf.png"
+				player_api.set_model(player, "3d_armor_character_zabrak_female.b3d")
+			elseif privs.GAMEtwilek then
+				player_skin_texture = "player_species_twilek_skinf.png"
+				player_api.set_model(player, "3d_armor_character_twilek_female.b3d")
+			elseif privs.GAMEman then
+				player_skin_texture = "player_species_man_skinf.png"
+				player_api.set_model(player, "3d_armor_character_female.b3d")
+			elseif privs.GAMErodian then
+				player_skin_texture = "player_species_rodian_skin.png"
+				player_api.set_model(player, "3d_armor_character_rodian_female.b3d")
+			elseif privs.GAMEtogruta then
+				player_skin_texture = "player_species_togruta_skinf.png"
+				player_api.set_model(player, "3d_armor_character_togruta_female.b3d")
+			end
+		end
 		player_api.set_textures(player, {
-			self.textures[name].skin,
+			player_skin_texture,
 			self.textures[name].armor,
 			self.textures[name].wielditem,
 		})

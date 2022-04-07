@@ -141,34 +141,7 @@ end)
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	local privs = minetest.get_player_privs(name)
-	local meta = player:get_meta()
-	if privs.GAMEjedi then
-		armor.textures[name].skin = "player_species_jedi_skin.png"
-	elseif privs.GAMEmale then
-		if privs.GAMEzabrak then
-			armor.textures[name].skin = "player_species_zabrak_skin.png"
-		elseif privs.GAMEtwilek then
-			armor.textures[name].skin = "player_species_twilek_skin.png"
-		elseif privs.GAMEman then
-			armor.textures[name].skin = "player_species_man_skin.png"
-		elseif privs.GAMErodian then
-			armor.textures[name].skin = "player_species_rodian_skin.png"
-		elseif privs.GAMEtogruta then
-			armor.textures[name].skin = "player_species_togruta_skin.png"
-		end
-	elseif privs.GAMEfemale then
-		if privs.GAMEzabrak then
-			armor.textures[name].skin = "player_species_zabrak_skinf.png"
-		elseif privs.GAMEtwilek then
-			armor.textures[name].skin = "player_species_twilek_skinf.png"
-		elseif privs.GAMEman then
-			armor.textures[name].skin = "player_species_man_skinf.png"
-		elseif privs.GAMErodian then
-			armor.textures[name].skin = "player_species_rodian_skin.png"
-		elseif privs.GAMEtogruta then
-			armor.textures[name].skin = "player_species_togruta_skinf.png"
-		end
-	else
+	if not privs.GAMEjedi and not privs.GAMEfemale and not privs.GAMEmale then
 		minetest.after(1, function()
 			if minetest.is_singleplayer() then
 				minetest.show_formspec(name, "race_selector", race_chooser .. fly_stuff)
@@ -191,10 +164,12 @@ local function player_race_stuff(race, text, mf, func, name, privs, player)
 	end
 	if mf == "male" or race == "rodian" or race == "jedi" then
 		player_api.set_textures(player, {"player_species_" .. race .. "_skin.png", "3d_armor_trans.png", "3d_armor_trans.png", "3d_armor_trans.png"})
-	armor.textures[name].skin = "player_species_" .. race .. "_skin.png"
+		armor.textures[name].skin = "player_species_" .. race .. "_skin.png"
+		player_api.set_model(player, "3d_armor_character_"..race.."_male_1.b3d")
 	elseif mf == "female" then
 		player_api.set_textures(player, {"player_species_" .. race .. "_skinf.png", "3d_armor_trans.png", "3d_armor_trans.png", "3d_armor_trans.png"})
-	armor.textures[name].skin = "player_species_" .. race .. "_skinf.png"
+		player_api.set_model(player, "3d_armor_character_"..race.."_female_1.b3d")
+		armor.textures[name].skin = "player_species_" .. race .. "_skinf.png"
 	end
 	minetest.log("action", name.. " chose to be a " .. race)
 end
@@ -206,7 +181,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.gender == "Male" then
 		if fields.zabrak then
 			player_race_stuff("zabrak", "zabraks", "male", give_stuff_zabrak, name, privs, player)
-
 		elseif fields.twilek then
 			player_race_stuff("twilek", "twileks", "male", give_stuff_twilek, name, privs, player)
 		elseif fields.man then

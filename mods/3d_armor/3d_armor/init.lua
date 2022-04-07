@@ -316,7 +316,7 @@ player_api.register_model("3d_armor_character.b3d", {
 	},
 })
 
-player_api.register_model("3d_armor_character_twilek_female_1.b3d", {
+player_api.register_model("3d_armor_character_female.b3d", {
 	animation_speed = 30,
 	textures = {
 		armor.default_skin..".png",
@@ -333,7 +333,126 @@ player_api.register_model("3d_armor_character_twilek_female_1.b3d", {
 	},
 })
 
-player_api.register_model("3d_armor_character_twilek_male_1.b3d", {
+player_api.register_model("3d_armor_character_twilek_female.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_twilek_male.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_zabrak_male.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_zabrak_female.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_rodain_male.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_rodian_female.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_togruta_male.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_togruta_female.b3d", {
 	animation_speed = 30,
 	textures = {
 		armor.default_skin..".png",
@@ -364,7 +483,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	player_api.set_model(player, "3d_armor_character.b3d")
+	--player_api.set_model(player, "3d_armor_character.b3d")
 	local player_name = player:get_player_name()
 
 	minetest.after(0, function()

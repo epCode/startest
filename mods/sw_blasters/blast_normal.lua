@@ -127,29 +127,29 @@ function BLAST_ENTITY.on_step(self, dtime)
 			self._hit_wall = true
 		end
 
-    -- damage players and mobs while in flight
-  	local objects = minetest.get_objects_inside_radius(pos, 1.5)
-  	for _,obj in ipairs(objects) do
-			if self._destroyed ~= true then
-	  		if obj ~= self._shooter then
-	  			if obj ~= self._shooter and self._lifetimer < 0.1 or self._lifetimer > 0.1 then
-	  				if obj:is_player() or obj:get_luaentity()._cmi_is_mob then
-							minetest.sound_play("sw_blasters_hit_enemy", {pos=self._shooter:get_pos(), max_hear_distance=4, pitch = math.random(90,120)/100}, true)
-							if self._distance_traveled and self._distance_traveled > minetest.get_item_group(self._wielded_item_used:get_name(), "range") then
-								self._damage = self._damage * (minetest.get_item_group(self._wielded_item_used:get_name(), "range")/self._distance_traveled)
-								if self._damage < 1 then
-									self._damage = 1
-								end
-							end
-	  					obj:punch(self.object, 1.0, {
-	  						full_punch_interval=1.0,
-	  						damage_groups={fleshy=self._damage},
-	  					}, self.object:get_velocity())
-	            self._destroyed = true
-	  				end
-	  			end
-	  		end
-	  	end
+
+		local look_dir = vector.rotate(vector.new(0,0,1), self.object:get_rotation())
+		local raycast = minetest.raycast(pos, vector.add(self.object:get_pos(), vector.multiply(look_dir, 2)), true, false)
+		for hitpoint in raycast do
+			if hitpoint.type == "node" then
+				minetest.chat_send_all("node")
+			elseif hitpoint.type == "object" then
+				if minetest.is_player(hitpoint.ref) then
+					minetest.chat_send_all("object")
+					minetest.sound_play("sw_blasters_hit_enemy", {pos=self._shooter:get_pos(), max_hear_distance=4, pitch = math.random(90,120)/100}, true)
+					if self._distance_traveled and self._distance_traveled > minetest.get_item_group(self._wielded_item_used:get_name(), "range") then
+						self._damage = self._damage * (minetest.get_item_group(self._wielded_item_used:get_name(), "range")/self._distance_traveled)
+						if self._damage < 1 then
+							self._damage = 1
+						end
+					end
+					self._destroyed = true
+					hitpoint.ref:punch(self.object, 1.0, {
+						full_punch_interval=1.0,
+						damage_groups={fleshy=self._damage},
+					}, self.object:get_velocity())
+				end
+			end
 		end
 
 		if self._destroyed == true then
