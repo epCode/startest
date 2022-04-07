@@ -149,6 +149,7 @@ minetest.register_on_joinplayer(function(player)
 			armor.textures[name].skin = "player_species_zabrak_skin.png"
 		elseif privs.GAMEtwilek then
 			armor.textures[name].skin = "player_species_twilek_skin.png"
+			player_api.set_model(player, "3d_armor_character_twilek_male_1.b3d")
 		elseif privs.GAMEman then
 			armor.textures[name].skin = "player_species_man_skin.png"
 		elseif privs.GAMErodian then
