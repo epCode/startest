@@ -64,6 +64,7 @@ register_node('sw_core_items:', {
     groups = { oddly_breakable_by_hand = 3 },
     is_ground_content = true
 })
+--no_pain
 register_node('sw_core_items:', {
     description=S("Light Desert Sandstone"),
     tiles = { 'sw_core_items_.png' },
