@@ -11,7 +11,7 @@ multidimensions.register_dimension=function(name,def,self)
 	def.self = def.self or			{}
 
 	def.dim_y = def.dim_y or			y
-	def.dim_height = def.dim_height or		1000
+	def.dim_height = def.dim_height or 1500
 
 	def.bedrock_depth = 50
 	def.dirt_start = def.dim_y +			(def.dirt_start or 501)

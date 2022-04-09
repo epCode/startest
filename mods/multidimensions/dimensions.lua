@@ -63,6 +63,34 @@ multidimensions.register_dimension("tattooine",{
 		["default:ice"]={chance=1,max_heat=20},
 	},]]
 })
+multidimensions.register_dimension("planet2",{
+  grass = "sw_core_items:sand_desert_light_hard",
+  dirt = "sw_core_items:sand_desert_light_hard",
+  sand = "sw_core_items:sand_desert_light_hard",
+  stone = "sw_core_items:sand_desert_light_hard",
+  water = "sw_core_items:sand_desert_light_hard",
+  terrain_density = .1,
+  enable_water = false,
+  map = {
+    offset = 0,
+    scale = .3,
+    spread = {x=100,y=18,z=100},
+    seeddiff = 1,
+    octaves = 5,
+    persist = 0.7,
+    lacunarity = 1,
+    flags = "absvalue",
+   },
+	--ground_ores = [],
+	--stone_ores = [],
+	--sand_ores={["default:clay"]={chunk=2,chance=5000}},
+	--grass_ores={
+		--["default:dirt_with_snow"]={chance=1,max_heat=20},
+	--},
+	--[[water_ores={
+		["default:ice"]={chance=1,max_heat=20},
+	},]]
+})
 --[[
 minetest.register_lbm({
 	name = "multidimensions:lbm",
@@ -88,3 +116,18 @@ minetest.register_lbm({
 	end,
 })
 ]]
+
+local tattooine = multidimensions.registered_dimensions["tattooine"]
+local planet2 = multidimensions.registered_dimensions["planet2"]
+
+minetest.register_on_respawnplayer(function(player)
+	local meta = player:get_meta()
+	local planet = meta:get_string("spawn_planet")
+  local pos = player:get_pos()
+	if planet == "tattooine" then
+		player:set_pos({x=pos.x,y=tattooine.dirt_start+tattooine.dirt_depth+10,z=pos.z})
+	elseif planet == "planet2" then
+		player:set_pos({x=pos.x,y=planet2.dirt_start+planet2.dirt_depth+10,z=pos.z})
+	end
+  return true
+end)

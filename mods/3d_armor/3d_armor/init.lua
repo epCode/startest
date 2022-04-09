@@ -7,6 +7,76 @@ local timer = 0
 
 dofile(modpath.."/api.lua")
 
+armor.calculate_texture = function(player)
+	local name = player:get_player_name()
+	local privs = minetest.get_player_privs(name)
+	local player_skin_texture = "blank.png"
+	if privs.GAMEjedi then
+		player_skin_texture = "player_species_jedi_skin.png"
+	elseif privs.GAMEmale then
+		if privs.GAMEzabrak then
+			player_skin_texture = "player_species_zabrak_skin.png"
+		elseif privs.GAMEtwilek then
+			player_skin_texture = "player_species_twilek_skin.png"
+		elseif privs.GAMEman then
+			player_skin_texture = "player_species_man_skin.png"
+		elseif privs.GAMErodian then
+			player_skin_texture = "player_species_rodian_skin.png"
+		elseif privs.GAMEtogruta then
+			player_skin_texture = "player_species_togruta_skin.png"
+		end
+	elseif privs.GAMEfemale then
+		if privs.GAMEzabrak then
+			player_skin_texture = "player_species_zabrak_skinf.png"
+		elseif privs.GAMEtwilek then
+			player_skin_texture = "player_species_twilek_skinf.png"
+		elseif privs.GAMEman then
+			player_skin_texture = "player_species_man_skinf.png"
+		elseif privs.GAMErodian then
+			player_skin_texture = "player_species_rodian_skin.png"
+		elseif privs.GAMEtogruta then
+			player_skin_texture = "player_species_togruta_skinf.png"
+		end
+	end
+	return player_skin_texture
+end
+
+armor.calculate_model = function(player)
+	local name = player:get_player_name()
+	local privs = minetest.get_player_privs(name)
+	local player_model = "blank.b3d"
+	if privs.GAMEjedi then
+		player_model = "3d_armor_character.b3d"
+	elseif privs.GAMEmale then
+		if privs.GAMEzabrak then
+			player_model = "3d_armor_character_zabrak_male.b3d"
+		elseif privs.GAMEtwilek then
+			player_model = "3d_armor_character_twilek_male.b3d"
+		elseif privs.GAMEman then
+			player_model = "3d_armor_character.b3d"
+		elseif privs.GAMErodian then
+			player_model = "3d_armor_character_rodian_male.b3d"
+			minetest.chat_send_all("hi")
+		elseif privs.GAMEtogruta then
+			player_model = "3d_armor_character_togruta_male.b3d"
+		end
+	elseif privs.GAMEfemale then
+		if privs.GAMEzabrak then
+			player_model = "3d_armor_character_zabrak_female.b3d"
+		elseif privs.GAMEtwilek then
+			player_model = "3d_armor_character_twilek_female.b3d"
+		elseif privs.GAMEman then
+			player_model = "3d_armor_character_female.b3d"
+		elseif privs.GAMErodian then
+			player_model = "3d_armor_character_rodian_female.b3d"
+		elseif privs.GAMEtogruta then
+			player_model = "3d_armor_character_togruta_female.b3d"
+		end
+	end
+	return player_model
+end
+
+
 -- local functions
 local F = minetest.formspec_escape
 local S = armor.get_translator
@@ -401,7 +471,7 @@ player_api.register_model("3d_armor_character_zabrak_female.b3d", {
 	},
 })
 
-player_api.register_model("3d_armor_character_rodain_male.b3d", {
+player_api.register_model("3d_armor_character_rodian_male.b3d", {
 	animation_speed = 30,
 	textures = {
 		armor.default_skin..".png",
@@ -485,6 +555,15 @@ end)
 minetest.register_on_joinplayer(function(player)
 	--player_api.set_model(player, "3d_armor_character.b3d")
 	local player_name = player:get_player_name()
+
+	local player_hard_texture = armor.calculate_texture(player)
+	local player_hard_model = armor.calculate_model(player)
+	player_api.set_model(player, player_hard_model)
+	player_api.set_textures(player, {
+		player_hard_texture,
+		armor.textures[name].armor,
+		armor.textures[name].wielditem,
+	})
 
 	minetest.after(0, function()
 		-- TODO: Added in 7566ecc - What's the prupose?

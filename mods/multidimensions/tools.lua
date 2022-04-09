@@ -129,8 +129,8 @@ multidimensions.apply_dimension=function(player)
 		end
 	end
 	for i, v in pairs(multidimensions.registered_dimensions) do
-		if p.y > v.dim_y and p.y < v.dim_y+v.dim_height then
-			multidimensions.player_pos[name] = {y1 = v.dim_y, y2 = v.dim_y+v.dim_height, name=i}
+		if p.y > v.dim_y and p.y < v.dim_y+v.dim_height-500 then
+			multidimensions.player_pos[name] = {y1 = v.dim_y, y2 = v.dim_y+v.dim_height-500, name=i}
 			player:set_physics_override({gravity=v.gravity})
 			--[[
 			if v.sky then
@@ -145,7 +145,6 @@ multidimensions.apply_dimension=function(player)
 		end
 	end
 	player:set_physics_override({gravity=1})
-	player:set_sky(nil,"regular",nil)
 	multidimensions.player_pos[name] = {
 		y1 = multidimensions.earth.under,
 		y2 = multidimensions.earth.above,
@@ -180,46 +179,60 @@ minetest.register_globalstep(function(dtime)
 		capg=0
 		for _, player in pairs(minetest.get_connected_players()) do
 			multidimensions.apply_dimension(player)
+
+
 			if multidimensions.registered_dimensions[multidimensions.player_pos[player:get_player_name()].name] then
-				space_skybox = {
-					"multidimensions_space.png",
-					"multidimensions_space.png^multidimensions_"..multidimensions.player_pos[player:get_player_name()].name..".png",
-					"multidimensions_space.png",
-					"multidimensions_space.png",
-					"multidimensions_space.png",
-					"multidimensions_space.png"
-				}
+				player:get_meta():set_string("last_planet", multidimensions.player_pos[player:get_player_name()].name)
+			elseif not player:get_meta():get_string("last_planet") then
+				player:get_meta():set_string("last_planet", "tattooine")
 			end
 			if not multidimensions.registered_dimensions[multidimensions.player_pos[player:get_player_name()].name] then
 	      player:set_sky({
 	        type = "skybox",
-	        textures = space_skybox,
+	        textures = {
+						"multidimensions_space.png",
+						"multidimensions_space.png^multidimensions_"..player:get_meta():get_string("last_planet")..".png",
+						"multidimensions_space.png",
+						"multidimensions_space.png",
+						"multidimensions_space.png",
+						"multidimensions_space.png"
+					},
 	        clouds = false,
-	        sunrise_visible = false
+	        sunrise_visible = false,
 	      })
 	      player:set_stars({
-	        visible = false
+	        visible = false,
 	      })
 	      player:set_sun({
-	        sunrise_visible = false
+	        sunrise_visible = false,
+					texture = "multidimensions_sun_"..player:get_meta():get_string("last_planet")..".png",
+	      })
+				player:set_moon({
+	        sunrise_visible = true,
+					texture = "multidimensions_moon_"..player:get_meta():get_string("last_planet")..".png",
 	      })
 	      player:set_stars({
-	        visible = false
+	        visible = false,
 	      })
 	    else
 	      player:set_sky({
 	        type = "regular",
 	        clouds = true,
-	        sunrise_visible = true
+	        sunrise_visible = true,
 	      })
 	      player:set_stars({
-	        visible = true
+	        visible = true,
 	      })
 	      player:set_sun({
-	        sunrise_visible = true
+	        sunrise_visible = true,
+					texture = "multidimensions_sun_"..player:get_meta():get_string("last_planet")..".png",
+	      })
+	      player:set_moon({
+	        sunrise_visible = true,
+					texture = "multidimensions_moon_"..player:get_meta():get_string("last_planet")..".png",
 	      })
 	      player:set_stars({
-	        visible = true
+	        visible = true,
 	      })
 	    end
 			multidimensions.player_dimension[player] = multidimensions.player_pos[player:get_player_name()].name

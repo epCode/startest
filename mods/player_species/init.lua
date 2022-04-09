@@ -1,6 +1,7 @@
 player_species = {}
 
 local tattooine = multidimensions.registered_dimensions["tattooine"]
+local planet2 = multidimensions.registered_dimensions["planet2"]
 --local naboo = multidimensions.registered_dimensions["naboo"]
 --local illum = multidimensions.registered_dimensions["illum"]
 
@@ -157,7 +158,6 @@ local function player_race_stuff(race, text, mf, func, name, privs, player)
 	privs["GAME" .. race] = true
 	privs["GAME" .. mf] = true
 	local pos = player:get_pos()
-	player:set_pos({x=pos.x,y=tattooine.dirt_start+tattooine.dirt_depth+5,z=pos.z})
 	minetest.set_player_privs(name, privs)
 	if minetest.settings:get_bool("lott_give_initial_stuff", true) == true then
 		func(player)
@@ -172,6 +172,14 @@ local function player_race_stuff(race, text, mf, func, name, privs, player)
 		armor.textures[name].skin = "player_species_" .. race .. "_skinf.png"
 	end
 	minetest.log("action", name.. " chose to be a " .. race)
+	local meta = player:get_meta()
+	if mf == "male" then
+		meta:set_string("spawn_planet", "tattooine")
+		player:set_pos({x=pos.x,y=tattooine.dirt_start+tattooine.dirt_depth+10,z=pos.z})
+	else
+		meta:set_string("spawn_planet", "planet2")
+		player:set_pos({x=pos.x,y=planet2.dirt_start+planet2.dirt_depth+10,z=pos.z})
+	end
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
