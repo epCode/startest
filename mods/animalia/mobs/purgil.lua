@@ -56,7 +56,7 @@ local function is_node_walkable(name)
     return def and def.walkable
 end
 
-creatura.register_mob("animalia:bat", {
+creatura.register_mob("animalia:purgil", {
     -- Stats
     max_health = 5,
     armor_groups = {fleshy = 200},
@@ -265,11 +265,11 @@ creatura.register_mob("animalia:bat", {
 		if animalia.set_nametag(self, clicker) then
 			return
 		end
-		animalia.add_libri_page(self, clicker, {name = "bat", form = "pg_bat;Bats"})
+		animalia.add_libri_page(self, clicker, {name = "purgil", form = "pg_purgil;Purgil"})
 	end,
 	on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
 		creatura.basic_punch_func(self, puncher, time_from_last_punch, tool_capabilities, direction, damage)
 	end
 })
 
-creatura.register_spawn_egg("animalia:bat", "392517", "321b0b")
+creatura.register_spawn_egg("animalia:purgil", "392517", "321b0b")

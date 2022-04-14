@@ -33,19 +33,7 @@ dofile(path.."/api/lasso.lua")
 dofile(path.."/craftitems.lua")
 
 animalia.animals = {
-    "animalia:bat",
-    "animalia:bird",
-    "animalia:cat",
-    "animalia:chicken",
-    "animalia:cow",
-    "animalia:tropical_fish",
-    "animalia:frog",
-    "animalia:horse",
-    "animalia:pig",
-    "animalia:reindeer",
-    "animalia:sheep",
-    "animalia:turkey",
-    "animalia:wolf",
+    "animalia:purgil",
 }
 
 for i = 1, #animalia.animals do
