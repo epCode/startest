@@ -1,22 +1,12 @@
-minetest.register_privilege("dimensions", {
-	description = "Can use dimensions teleport tool",
-	give_to_singleplayer= false,
-})
+
 
 multidimensions.clear_dimensions=function()
 	multidimensions.registered_dimensions = {}
 end
 
-minetest.register_alias("dim", "multidimensions:teleporttool")
-
 multidimensions.setrespawn=function(object,pos)
 	if not object:is_player() then return false end
 	local name=object:get_player_name()
-	if minetest.check_player_privs(name, {dimensions=true}) then return false end
-	if multidimensions.remake_bed and minetest.get_modpath("beds")~=nil then
-		beds.spawn[name]=pos
-		beds.save_spawns()
-	end
 	if multidimensions.remake_home and minetest.get_modpath("sethome")~=nil then
 		sethome.set(name, pos)
 	end
@@ -82,29 +72,6 @@ minetest.register_on_player_receive_fields(function(player, form, pressed)
 	end
 end)
 
-minetest.register_tool("multidimensions:teleporttool", {
-	description = "Dimensions teleport tool",
-	inventory_image = "default_stick.png^[colorize:#e9ff00ff",
-on_use = function(itemstack, user, pointed_thing)
-	local pos=user:get_pos()
-	local name=user:get_player_name()
-
-	if minetest.check_player_privs(name, {dimensions=true})==false then
-		itemstack:replace(nil)
-		minetest.chat_send_player(name,"You need the dimensions privilege to use this tool")
-		return itemstack
-	end
-
-	local object={}
-	if pointed_thing.type=="object" then
-		object=pointed_thing.ref
-	else
-		object=user
-	end
-	multidimensions.form(user,object)
-	return itemstack
-end
-})
 
 minetest.register_on_respawnplayer(function(player)
 	multidimensions.apply_dimension(player)
@@ -210,6 +177,7 @@ minetest.register_globalstep(function(dtime)
 				player:set_moon({
 	        sunrise_visible = true,
 					texture = "multidimensions_moon_"..player:get_meta():get_string("last_planet")..".png",
+					scale = 1,
 	      })
 	      player:set_stars({
 	        visible = false,
@@ -230,6 +198,7 @@ minetest.register_globalstep(function(dtime)
 	      player:set_moon({
 	        sunrise_visible = true,
 					texture = "multidimensions_moon_"..player:get_meta():get_string("last_planet")..".png",
+					scale = 6,
 	      })
 	      player:set_stars({
 	        visible = true,

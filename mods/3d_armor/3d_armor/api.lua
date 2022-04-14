@@ -345,18 +345,16 @@ end
 --
 --  @function armor:update_player_visuals
 --  @tparam ObjectRef player
-armor.update_player_visuals = function(self, player)
+armor.update_player_visuals = function(self, player, texture, preview)
 	if not player then
 		return
 	end
-
-	local player_hard_texture = armor.calculate_texture(player)
 	local player_hard_model = armor.calculate_model(player)
 	player_api.set_model(player, player_hard_model)
 	player_api.set_textures(player, {
-		player_hard_texture,
-		self.textures[name].armor,
-		self.textures[name].wielditem,
+		armor.calculate_texture(player),
+		texture,
+		preview,
 	})
 	self:run_callbacks("on_update", player)
 end
@@ -517,12 +515,12 @@ armor.set_player_armor = function(self, player)
 			player:set_physics_override(physics)
 		end
 	end
-	self.textures[name].armor = texture
-	self.textures[name].preview = preview
+	armor.textures[name].armor = texture
+	armor.textures[name].preview = preview
 	self.def[name].level = self.def[name].groups.fleshy or 0
 	self.def[name].state = state
 	self.def[name].count = count
-	self:update_player_visuals(player)
+	self:update_player_visuals(player, texture, preview)
 end
 
 --- Action when armor is punched.
@@ -746,14 +744,7 @@ local skin_mod
 --  @tparam string name Player name.
 --  @treturn string Skin filename.
 armor.get_player_skin = function(self, name)
-	if (skin_mod == "skins" or skin_mod == "simple_skins") and skins.skins[name] then
-		return skins.skins[name]..".png"
-	elseif skin_mod == "u_skins" and u_skins.u_skins[name] then
-		return u_skins.u_skins[name]..".png"
-	elseif skin_mod == "wardrobe" and wardrobe.playerSkins and wardrobe.playerSkins[name] then
-		return wardrobe.playerSkins[name]
-	end
-	return armor.default_skin..".png"
+	return armor.calculate_texture(minetest.get_player_by_name(name))
 end
 
 --- Updates skin.
@@ -764,7 +755,7 @@ armor.update_skin = function(self, name)
 	minetest.after(0, function()
 		local pplayer = minetest.get_player_by_name(name)
 		if pplayer then
-			self.textures[name].skin = self:get_player_skin(name)
+			armor.textures[name].skin = self:get_player_skin(name)
 			self:set_player_armor(pplayer)
 		end
 	end)

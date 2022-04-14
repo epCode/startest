@@ -11,31 +11,28 @@ armor.calculate_texture = function(player)
 	local name = player:get_player_name()
 	local privs = minetest.get_player_privs(name)
 	local player_skin_texture = "blank.png"
+	local gender = ""
+	if privs.GAMEfemale then
+		gender = "f"
+	end
+	if privs.GAMEyoung then
+		gender = gender.."_young"
+	end
 	if privs.GAMEjedi then
 		player_skin_texture = "player_species_jedi_skin.png"
-	elseif privs.GAMEmale then
+	elseif privs.GAMEmale or privs.GAMEfemale then
 		if privs.GAMEzabrak then
-			player_skin_texture = "player_species_zabrak_skin.png"
+			player_skin_texture = "player_species_zabrak_skin"..gender..".png"
 		elseif privs.GAMEtwilek then
-			player_skin_texture = "player_species_twilek_skin.png"
+			player_skin_texture = "player_species_twilek_skin"..gender..".png"
 		elseif privs.GAMEman then
-			player_skin_texture = "player_species_man_skin.png"
+			player_skin_texture = "player_species_man_skin"..gender..".png"
 		elseif privs.GAMErodian then
-			player_skin_texture = "player_species_rodian_skin.png"
+			player_skin_texture = "player_species_rodian_skin"..gender..".png"
 		elseif privs.GAMEtogruta then
-			player_skin_texture = "player_species_togruta_skin.png"
-		end
-	elseif privs.GAMEfemale then
-		if privs.GAMEzabrak then
-			player_skin_texture = "player_species_zabrak_skinf.png"
-		elseif privs.GAMEtwilek then
-			player_skin_texture = "player_species_twilek_skinf.png"
-		elseif privs.GAMEman then
-			player_skin_texture = "player_species_man_skinf.png"
-		elseif privs.GAMErodian then
-			player_skin_texture = "player_species_rodian_skin.png"
-		elseif privs.GAMEtogruta then
-			player_skin_texture = "player_species_togruta_skinf.png"
+			player_skin_texture = "player_species_togruta_skin"..gender..".png"
+		elseif privs.GAMEgungan then
+			player_skin_texture = "player_species_gungan_skin"..gender..".png"
 		end
 	end
 	return player_skin_texture
@@ -45,32 +42,28 @@ armor.calculate_model = function(player)
 	local name = player:get_player_name()
 	local privs = minetest.get_player_privs(name)
 	local player_model = "blank.b3d"
+	local gender = "male"
+	if privs.GAMEfemale then
+		gender = "female"
+	end
+	if privs.GAMEyoung then
+		gender = "young"
+	end
 	if privs.GAMEjedi then
 		player_model = "3d_armor_character.b3d"
-	elseif privs.GAMEmale then
+	elseif privs.GAMEmale or privs.GAMEfemale then
 		if privs.GAMEzabrak then
-			player_model = "3d_armor_character_zabrak_male.b3d"
+			player_model = "3d_armor_character_zabrak_"..gender..".b3d"
 		elseif privs.GAMEtwilek then
-			player_model = "3d_armor_character_twilek_male.b3d"
+			player_model = "3d_armor_character_twilek_"..gender..".b3d"
 		elseif privs.GAMEman then
-			player_model = "3d_armor_character.b3d"
+			player_model = "3d_armor_character_"..gender..".b3d"
 		elseif privs.GAMErodian then
-			player_model = "3d_armor_character_rodian_male.b3d"
-			minetest.chat_send_all("hi")
+			player_model = "3d_armor_character_rodian_"..gender..".b3d"
 		elseif privs.GAMEtogruta then
-			player_model = "3d_armor_character_togruta_male.b3d"
-		end
-	elseif privs.GAMEfemale then
-		if privs.GAMEzabrak then
-			player_model = "3d_armor_character_zabrak_female.b3d"
-		elseif privs.GAMEtwilek then
-			player_model = "3d_armor_character_twilek_female.b3d"
-		elseif privs.GAMEman then
-			player_model = "3d_armor_character_female.b3d"
-		elseif privs.GAMErodian then
-			player_model = "3d_armor_character_rodian_female.b3d"
-		elseif privs.GAMEtogruta then
-			player_model = "3d_armor_character_togruta_female.b3d"
+			player_model = "3d_armor_character_togruta_"..gender..".b3d"
+		elseif privs.GAMEgungan then
+			player_model = "3d_armor_character_gungan_"..gender..".b3d"
 		end
 	end
 	return player_model
@@ -346,23 +339,7 @@ local function init_player_armor(initplayer)
 	for group, _ in pairs(armor.registered_groups) do
 		armor.def[name].groups[group] = 0
 	end
-	local skin = armor:get_player_skin(name)
-	armor.textures[name] = {
-		skin = skin,
-		armor = "3d_armor_trans.png",
-		wielditem = "3d_armor_trans.png",
-		preview = armor.default_skin.."_preview.png",
-	}
-	local texture_path = minetest.get_modpath("player_textures")
-	if texture_path then
-		local dir_list = minetest.get_dir_list(texture_path.."/textures")
-		for _, fn in pairs(dir_list) do
-			if fn == "player_"..name..".png" then
-				armor.textures[name].skin = fn
-				break
-			end
-		end
-	end
+
 	armor:set_player_armor(initplayer)
 	return true
 end
@@ -539,6 +516,57 @@ player_api.register_model("3d_armor_character_togruta_female.b3d", {
 	},
 })
 
+player_api.register_model("3d_armor_character_togruta_young.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_gungan_male.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
+player_api.register_model("3d_armor_character_gungan_female.b3d", {
+	animation_speed = 30,
+	textures = {
+		armor.default_skin..".png",
+		"3d_armor_trans.png",
+		"3d_armor_trans.png",
+	},
+	animations = {
+		stand = {x=0, y=79},
+		lay = {x=162, y=166},
+		walk = {x=168, y=187},
+		mine = {x=189, y=198},
+		walk_mine = {x=200, y=219},
+		sit = {x=81, y=160},
+	},
+})
+
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local name = armor:get_valid_player(player, "[on_player_receive_fields]")
 	if not name then
@@ -553,17 +581,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	--player_api.set_model(player, "3d_armor_character.b3d")
-	local player_name = player:get_player_name()
-
-	local player_hard_texture = armor.calculate_texture(player)
 	local player_hard_model = armor.calculate_model(player)
 	player_api.set_model(player, player_hard_model)
-	player_api.set_textures(player, {
-		player_hard_texture,
-		armor.textures[name].armor,
-		armor.textures[name].wielditem,
-	})
+	--player_api.set_model(player, "3d_armor_character.b3d")
+	local player_name = player:get_player_name()
 
 	minetest.after(0, function()
 		-- TODO: Added in 7566ecc - What's the prupose?
@@ -672,6 +693,7 @@ end, true)
 
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime
+
 
 	if armor.config.feather_fall == true then
 		for _,player in pairs(minetest.get_connected_players()) do

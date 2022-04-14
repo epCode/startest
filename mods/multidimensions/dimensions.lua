@@ -128,6 +128,8 @@ minetest.register_on_respawnplayer(function(player)
 		player:set_pos({x=pos.x,y=tattooine.dirt_start+tattooine.dirt_depth+10,z=pos.z})
 	elseif planet == "planet2" then
 		player:set_pos({x=pos.x,y=planet2.dirt_start+planet2.dirt_depth+10,z=pos.z})
-	end
+	else
+    player:set_pos({x=pos.x,y=tattooine.dirt_start+tattooine.dirt_depth+10,z=pos.z})
+  end
   return true
 end)
