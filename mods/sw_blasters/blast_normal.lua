@@ -126,7 +126,7 @@ function BLAST_ENTITY.on_step(self, dtime)
 
 		if not self._hit_wall and not self._destroyed then
 			local look_dir = vector.rotate(vector.new(0,0,1), self.object:get_rotation())
-			local raycast = minetest.raycast(vector.add(pos, vector.multiply(look_dir, -2)), vector.add(pos, vector.multiply(look_dir, 2)), true, false)
+			local raycast = minetest.raycast(vector.add(pos, vector.multiply(look_dir, -1)), vector.add(pos, vector.multiply(look_dir, 6)), true, false)
 			for hitpoint in raycast do
 				if hitpoint.type == "node" then
 					self._node_in_way=vector.offset(hitpoint.under, 0, 1, 0)
@@ -135,7 +135,7 @@ function BLAST_ENTITY.on_step(self, dtime)
 				end
 			end
 
-			if self._player_hittable and minetest.is_player(self._player_hittable) and vector.distance(pos, self._node_in_way) > vector.distance(pos, self._player_hittable:get_pos()) then
+			if self._player_hittable then
 				minetest.sound_play("sw_blasters_hit_enemy", {pos=self._shooter:get_pos(), max_hear_distance=4, pitch = math.random(90,120)/100}, true)
 				if self._distance_traveled and self._distance_traveled > minetest.get_item_group(self._wielded_item_used:get_name(), "range") then
 					self._damage = self._damage * (minetest.get_item_group(self._wielded_item_used:get_name(), "range")/self._distance_traveled)

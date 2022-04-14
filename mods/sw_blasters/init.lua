@@ -41,7 +41,7 @@ function sw_blasters.shoot_entity(take_item, thrower, itemstack, thrown_thing, s
 	dir.z=dir.z+_z
 
 	arrow:set_properties({textures=textures})
-	arrow:set_velocity(vector.multiply(dir, speed*2.5))
+	arrow:set_velocity(vector.multiply(dir, speed*3.5))
 	arrow:set_acceleration({x=0, y=-gravity, z=0})
 	if take_item == true then
     if take_item then
