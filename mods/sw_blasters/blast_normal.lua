@@ -126,7 +126,7 @@ function BLAST_ENTITY.on_step(self, dtime)
 
 		if not self._hit_wall and not self._destroyed then
 			local look_dir = vector.rotate(vector.new(0,0,1), self.object:get_rotation())
-			local raycast = minetest.raycast(pos, vector.add(vector.multiply(look_dir, -1), vector.multiply(look_dir, 2)), true, false)
+			local raycast = minetest.raycast(vector.add(pos, vector.multiply(look_dir, -2)), vector.add(pos, vector.multiply(look_dir, 2)), true, false)
 			for hitpoint in raycast do
 				if hitpoint.type == "node" then
 					self._node_in_way=vector.offset(hitpoint.under, 0, 1, 0)

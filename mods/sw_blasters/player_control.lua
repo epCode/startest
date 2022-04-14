@@ -158,7 +158,9 @@ minetest.register_globalstep(function(dtime)
 			sw_blasters.gun_stats[player].overheated=false
 		end
 
+
 		if type ~= "other" then
+
 			-- check to see if we are pointing at an object
 			local objs = minetest.get_objects_inside_radius(player:get_pos(), 100)
 			for n = 1, #objs do
