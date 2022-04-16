@@ -137,4 +137,3 @@ Lua Entity Methods
 
 `get_target(target)`
 -- returns if `target` is alive, if mob has a line of sight with `target`, `target`s position
-

@@ -40,10 +40,10 @@ for i = 1, #animalia.animals do
     local name = string.split(animalia.animals[i], ":")[2]
     dofile(path.."/mobs/" .. name .. ".lua")
 end
-
+--[[
 if minetest.settings:get_bool("spawn_mobs", true) then
     dofile(path.."/api/spawning.lua")
-end
+end]]
 
 minetest.register_on_mods_loaded(function()
     for name, def in pairs(minetest.registered_entities) do
