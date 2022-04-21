@@ -7,7 +7,7 @@ local S = minetest.get_translator(minetest.get_current_modname())
 register_node('sw_core_items:sand_desert_light', {
     description=S("Light Desert Sand"),
     tiles = { 'sw_core_items_sand_desert_light.png' },
-    groups = { oddly_breakable_by_hand = 3 },
+    groups = { oddly_breakable_by_hand = 3, soil = 1 },
     is_ground_content = true
 })
 

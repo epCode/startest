@@ -83,6 +83,15 @@ minetest.register_on_leaveplayer(function(player)
 	multidimensions.player_pos[player:get_player_name()] = nil
 end)
 
+multidimensions.pos_to_dimension=function(pos)
+	p=pos
+	for i, v in pairs(multidimensions.registered_dimensions) do
+		if p.y > v.dim_y and p.y < v.dim_y+v.dim_height-500 then
+			return i
+		end
+	end
+end
+
 multidimensions.apply_dimension=function(player)
 	local p = player:get_pos()
 	local name = player:get_player_name()
@@ -182,11 +191,18 @@ minetest.register_globalstep(function(dtime)
 	      player:set_stars({
 	        visible = false,
 	      })
+				player:override_day_night_ratio(1)
 	    else
+				player:override_day_night_ratio(nil)
 	      player:set_sky({
 	        type = "regular",
 	        clouds = true,
 	        sunrise_visible = true,
+					sky_color = {
+						night_sky = "#000000",
+						night_horizon = "#000020",
+
+					},
 	      })
 	      player:set_stars({
 	        visible = true,
