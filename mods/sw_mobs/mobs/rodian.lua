@@ -18,7 +18,7 @@ minetest.register_entity("sw_mobs:rodian",{
 											-- common props
 	max_hp = 20,
 	physical = true,
-	collide_with_objects = true,
+	collide_with_objects = false,
 	collisionbox = {-0.4, -0, -0.4, 0.4, 1.6, 0.4},
 	visual = "mesh",
 	mesh = "3d_armor_character_rodian_male.b3d",
@@ -61,7 +61,7 @@ minetest.register_entity("sw_mobs:rodian",{
 	brainfunc = purgil_brain,
 
 	on_punch= function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-		cube_mobkit.on_punch(self, puncher, time_from_last_punch, tool_capabilities, dir)
+		mobkit.on_punch(self, puncher, time_from_last_punch, tool_capabilities, dir)
 	end,
 
 	-- dig on attack hitting
