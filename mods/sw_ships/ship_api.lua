@@ -92,8 +92,6 @@ function SHIP_ENTITY.on_step(self, dtime)
 			multidimensions.form(self._driver,self.object)
 		end
 
-		--self._driver:set_eye_offset({x=0,y=0,z=0},{x=0,y=10,z=5})
-
 		local dtime_rounded = round(dtime, 1)
 		if dtime_rounded < 0.1 then
 			dtime_rounded = 0.1
@@ -145,7 +143,7 @@ function SHIP_ENTITY.on_rightclick(self, clicker)
 	if clicker:is_player() then
 		if not self._driver then
 			self._driver = clicker
-			clicker:set_attach(self.object, "Main", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+			clicker:set_attach(self.object, "Main", {x=0,y=0,z=0}, {x=0,y=0,z=0}, true)
 		else
 			self._driver=nil
 			clicker:set_detach()
@@ -154,7 +152,7 @@ function SHIP_ENTITY.on_rightclick(self, clicker)
 	end
 end
 
-function sw_ships.register_ship(name, max_throttle, max_speed, textures, mesh, size, tilt, yaw_snap, collbox)
+function sw_ships.register_ship(name, max_throttle, max_speed, textures, mesh, size, tilt, yaw_snap, collbox, build_schem)
 	local NEW_SHIP_ENTITY = table.copy(SHIP_ENTITY)
 	NEW_SHIP_ENTITY.collisionbox = collbox
 	NEW_SHIP_ENTITY._throttle_max = max_throttle
@@ -165,4 +163,83 @@ function sw_ships.register_ship(name, max_throttle, max_speed, textures, mesh, s
 	NEW_SHIP_ENTITY._tilt_devider = tilt
 	NEW_SHIP_ENTITY._yaw_snap = yaw_snap
 	minetest.register_entity(name, NEW_SHIP_ENTITY)
+
+	local shiplist = build_schem
+	--local shiplist = {"+0,+1,-1,sw_core_items:sandstone_desert_pale_with_two_red_lines", "+0,+1,-2,sw_core_items:sandstone_desert_pale_with_two_red_lines"}
+
+	minetest.register_abm({
+		label = name,
+		nodenames = {shiplist[1]},
+		interval = 1,
+		chance = 1,
+		action = function(pos, node, active_object_count, active_object_count_wider)
+	    local check = true
+	    local ship_made=nil
+	    for i=1, 4 do
+	      local inv=i
+
+	      if not ship_made then
+	        check = true
+					for id=1, #shiplist do
+						if id ~= 1 then
+		          local target_node=string.sub(shiplist[id], 10, -1)
+		          local x_way=tonumber(string.sub(shiplist[id], 1, 2))
+		          local y_way=tonumber(string.sub(shiplist[id], 4, 5))
+		          local z_way=tonumber(string.sub(shiplist[id], 7, 8))
+		          if inv==1 then
+		            z_way=tonumber(string.sub(shiplist[id], 1, 2))
+		            y_way=tonumber(string.sub(shiplist[id], 4, 5))
+		            x_way=tonumber(string.sub(shiplist[id], 7, 8))
+		          elseif inv==2 then
+		            x_way=tonumber(string.sub(shiplist[id], 1, 2))*-1
+		            y_way=tonumber(string.sub(shiplist[id], 4, 5))
+		            z_way=tonumber(string.sub(shiplist[id], 7, 8))*-1
+		          elseif inv==3 then
+		            z_way=tonumber(string.sub(shiplist[id], 1, 2))*-1
+		            y_way=tonumber(string.sub(shiplist[id], 4, 5))
+		            x_way=tonumber(string.sub(shiplist[id], 7, 8))*-1
+		          end
+		          if check == true then
+		            if minetest.get_node(vector.add(pos,vector.new(x_way,y_way,z_way))).name == target_node then
+		              check = true
+		            else
+		              check = false
+		            end
+		          end
+						end
+	        end
+	        if check==true then
+	          ship_made=inv
+	        end
+	      end
+	    end
+	    if check == true then
+				for id=1, #shiplist do
+					if id ~= 1 then
+						local target_node=string.sub(shiplist[id], 10, -1)
+						local x_way=tonumber(string.sub(shiplist[id], 1, 2))
+						local y_way=tonumber(string.sub(shiplist[id], 4, 5))
+						local z_way=tonumber(string.sub(shiplist[id], 7, 8))
+						if ship_made==1 then
+							z_way=tonumber(string.sub(shiplist[id], 1, 2))
+							y_way=tonumber(string.sub(shiplist[id], 4, 5))
+							x_way=tonumber(string.sub(shiplist[id], 7, 8))
+						elseif ship_made==2 then
+							x_way=tonumber(string.sub(shiplist[id], 1, 2))*-1
+							y_way=tonumber(string.sub(shiplist[id], 4, 5))
+							z_way=tonumber(string.sub(shiplist[id], 7, 8))*-1
+						elseif ship_made==3 then
+							z_way=tonumber(string.sub(shiplist[id], 1, 2))*-1
+							y_way=tonumber(string.sub(shiplist[id], 4, 5))
+							x_way=tonumber(string.sub(shiplist[id], 7, 8))*-1
+						end
+						minetest.remove_node(vector.add(pos,vector.new(x_way,y_way,z_way)))
+					end
+					minetest.remove_node(pos)
+					minetest.add_entity(pos, name)
+		    end
+			end
+		end,
+	})
+
 end

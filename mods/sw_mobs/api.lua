@@ -391,6 +391,14 @@ cube_mobkit.on_punch = function(self, puncher, time_from_last_punch, tool_capabi
 	if mobkit.is_alive(self) then
 		local punch_interval = tool_capabilities.full_punch_interval or 1.4
 
+		self.object:set_texture_mod("^[colorize:black:130")
+
+		minetest.after(0.1, function()
+			if self and self.object then
+				self.object:set_texture_mod("")
+			end
+		end)
+
 		-- only hit if you're at 50% punch charge
 		if(time_from_last_punch>=punch_interval/2 ) then
 			mobkit.hurt(self,tool_capabilities.damage_groups.fleshy or 1)

@@ -12,7 +12,7 @@ dofile(path .. "/spawns.lua")
 dofile(path .. "/items.lua")
 dofile(path .. "/nodes.lua")
 dofile(path .. "/mobs/purgil.lua")
---dofile(path .. "/mobs/rodian.lua")
+dofile(path .. "/mobs/rodian.lua")
 --[[
 dofile(path .. "/mobs/box.lua")
 dofile(path .. "/mobs/box_small.lua")

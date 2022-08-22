@@ -46,6 +46,40 @@ armor:register_armor("3d_armor:shinplates_and_boots_mandalorian", {
 })
 
 
+armor:register_armor("3d_armor:helmet_steel", {
+	description = S("Helmet"),
+	inventory_image = "3d_armor_inv_helmet_steel.png",
+	groups = {armor_head=1, armor_heal=0, armor_use=2000, flammable=1},
+	armor_groups = {fleshy=5},
+	damage_groups = {cracky=3, snappy=2, choppy=3, crumbly=2, level=1},
+})
+--- Wood Chestplate
+
+armor:register_armor("3d_armor:chestplate_steel", {
+	description = S("Chestplate"),
+	inventory_image = "3d_armor_inv_chestplate_steel.png",
+	groups = {armor_torso=1, armor_heal=0, armor_use=2000, flammable=1},
+	armor_groups = {fleshy=10},
+	damage_groups = {cracky=3, snappy=2, choppy=3, crumbly=2, level=1},
+})
+--- Wood Leggings
+armor:register_armor("3d_armor:leg_guards_steel", {
+	description = S("Leg Guards"),
+	inventory_image = "3d_armor_inv_leggings_steel.png",
+	groups = {armor_legs=1, armor_heal=0, armor_use=2000, flammable=1},
+	armor_groups = {fleshy=10},
+	damage_groups = {cracky=3, snappy=2, choppy=3, crumbly=2, level=1},
+})
+--- Wood Boots
+armor:register_armor("3d_armor:shinplates_and_boots_steel", {
+	description = S("Shin Plates and Boots"),
+	inventory_image = "3d_armor_inv_boots_steel.png",
+	armor_groups = {fleshy=5},
+	damage_groups = {cracky=3, snappy=2, choppy=3, crumbly=2, level=1},
+	groups = {armor_feet=1, armor_heal=0, armor_use=2000, flammable=1},
+})
+
+
 minetest.register_craft({
 	output = "3d_armor:helmet_mandalorian",
 	recipe = {

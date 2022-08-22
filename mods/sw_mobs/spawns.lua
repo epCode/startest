@@ -75,23 +75,22 @@ local function spawnstep(dtime)
 				if minetest.registered_entities[mobname].planets then
 					for count = 1, #minetest.registered_entities[mobname].planets do
 						if minetest.registered_entities[mobname].planets[count] == multidimensions.pos_to_dimension(player:get_pos()) then
+							objs = minetest.get_objects_inside_radius(pos_spawn,abr*16*cave_modifier-2)
+							for _,obj in ipairs(objs) do				-- do not spawn if another player around
+								if obj:is_player() then
+									return
+								end
+							end
+
+							-- chat for debugging and testing spawns
+							--minetest.chat_send_all("Spawned at:"..math.floor(pos_spawn.x).." "..math.floor(pos_spawn.y).." "..math.floor(pos_spawn.z))
+							--minetest.chat_send_all("Chance: "..chance)
+
+							minetest.add_entity(pos_spawn,mobname)			-- spawn
+							num_spawns = num_spawns + 1
 						end
 					end
 				end
-
-				objs = minetest.get_objects_inside_radius(pos_spawn,abr*16*cave_modifier-2)
-				for _,obj in ipairs(objs) do				-- do not spawn if another player around
-					if obj:is_player() then
-						return
-					end
-				end
-
-				-- chat for debugging and testing spawns
-				--minetest.chat_send_all("Spawned at:"..math.floor(pos_spawn.x).." "..math.floor(pos_spawn.y).." "..math.floor(pos_spawn.z))
-				--minetest.chat_send_all("Chance: "..chance)
-
-				minetest.add_entity(pos_spawn,mobname)			-- spawn
-				num_spawns = num_spawns + 1
 			end
 		end
 	else

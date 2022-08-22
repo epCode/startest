@@ -219,7 +219,7 @@ local function validate_armor_inventory(player)
 	end
 	local elements = {}
 	local player_inv = player:get_inventory()
-	for i = 1, 6 do
+	for i = 1, 8 do
 		local stack = inv:get_stack("armor", i)
 		if stack:get_count() > 0 then
 			local item = stack:get_name()
@@ -261,11 +261,13 @@ local function init_player_armor(initplayer)
 	end
 	local armor_inv = minetest.create_detached_inventory(name.."_armor", {
 		on_put = function(inv, listname, index, stack, player)
+			sfinv.set_player_inventory_formspec(player)
 			validate_armor_inventory(player)
 			armor:save_armor_inventory(player)
 			armor:set_player_armor(player)
 		end,
 		on_take = function(inv, listname, index, stack, player)
+			sfinv.set_player_inventory_formspec(player)
 			validate_armor_inventory(player)
 			armor:save_armor_inventory(player)
 			armor:set_player_armor(player)
@@ -283,7 +285,7 @@ local function init_player_armor(initplayer)
 			if not element then
 				return 0
 			end
-			for i = 1, 6 do
+			for i = 1, 8 do
 				local stack = inv:get_stack("armor", i)
 				local def = stack:get_definition() or {}
 				if def.groups and def.groups["armor_"..element]
@@ -306,18 +308,18 @@ local function init_player_armor(initplayer)
 			return count
 		end,
 	}, name)
-	armor_inv:set_size("armor", 6)
+	armor_inv:set_size("armor", 8)
 	if not armor:load_armor_inventory(initplayer) and armor.migrate_old_inventory then
 		local player_inv = initplayer:get_inventory()
-		player_inv:set_size("armor", 6)
-		for i=1, 6 do
+		player_inv:set_size("armor", 8)
+		for i=1, 8 do
 			local stack = player_inv:get_stack("armor", i)
 			armor_inv:set_stack("armor", i, stack)
 		end
 		armor:save_armor_inventory(initplayer)
 		player_inv:set_size("armor", 0)
 	end
-	for i=1, 6 do
+	for i=1, 8 do
 		local stack = armor_inv:get_stack("armor", i)
 		if stack:get_count() > 0 then
 			armor:run_callbacks("on_equip", initplayer, i, stack)

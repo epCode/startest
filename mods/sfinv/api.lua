@@ -29,7 +29,8 @@ end
 function sfinv.get_nav_fs(player, context, nav, current_idx)
 	-- Only show tabs if there is more than one page
 	if #nav > 1 then
-		return "tabheader[0,0;sfinv_nav_tabs;" .. table.concat(nav, ",") ..
+		return
+				"tabheader[0,0;sfinv_nav_tabs;" .. table.concat(nav, ",") ..
 				";" .. current_idx .. ";true;false]"
 	else
 		return ""
@@ -37,24 +38,13 @@ function sfinv.get_nav_fs(player, context, nav, current_idx)
 end
 
 local theme_inv = [[
-		image[0,5.2;1,1;gui_hb_bg.png]
-		image[1,5.2;1,1;gui_hb_bg.png]
-		image[2,5.2;1,1;gui_hb_bg.png]
-		image[3,5.2;1,1;gui_hb_bg.png]
-		image[4,5.2;1,1;gui_hb_bg.png]
-		image[5,5.2;1,1;gui_hb_bg.png]
-		image[6,5.2;1,1;gui_hb_bg.png]
-		image[7,5.2;1,1;gui_hb_bg.png]
-		list[current_player;main;0,5.2;8,1;]
-		list[current_player;main;0,6.35;8,3;8]
+
 	]]
 
 function sfinv.make_formspec(player, context, content, show_inv, size)
 	local tmp = {
-		size or "size[8,9.1]",
+		content,
 		sfinv.get_nav_fs(player, context, context.nav_titles, context.nav_idx),
-		show_inv and theme_inv or "",
-		content
 	}
 	return table.concat(tmp, "")
 end
@@ -147,6 +137,8 @@ function sfinv.get_page(player)
 end
 
 minetest.register_on_joinplayer(function(player)
+	player:hud_set_hotbar_image("inventory_hotbar.png")
+	player:hud_set_hotbar_selected_image("inventory_hotbar_selected.png")
 	if sfinv.enabled then
 		sfinv.set_player_inventory_formspec(player)
 	end

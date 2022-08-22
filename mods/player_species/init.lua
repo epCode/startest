@@ -161,7 +161,20 @@ minetest.register_on_newplayer(function(player)
 	end
 end)
 
+function player_species.set_alliances_rep(player)
+	if not player:get_meta():get("repGAMEminingguild") then
+		local meta = player:get_meta()
+		meta:set_string("repGAMEminingguild", "25")
+		meta:set_string("repGAMEtransportguild", "35")
+		meta:set_string("repGAMEtheempire", "25")
+		meta:set_string("repGAMErebels", "40")
+		meta:set_string("repGAMEbounty", "20")
+		meta:set_string("alliances", "transporation_guild")
+	end
+end
+
 minetest.register_on_joinplayer(function(player)
+	player_species.set_alliances_rep(player)
 	local name = player:get_player_name()
 	local privs = minetest.get_player_privs(name)
 	if not privs.GAMEjedi and not privs.GAMEfemale and not privs.GAMEmale then
@@ -191,6 +204,7 @@ local function player_race_stuff(race, text, mf, func, name, privs, player, age)
 	if minetest.settings:get_bool("lott_give_initial_stuff", true) == true then
 		func(player)
 	end
+	player_species.set_alliances_rep(player)
 	minetest.log("action", name.. " chose to be a " .. race)
 	local meta = player:get_meta()
 	minetest.after(1, function()

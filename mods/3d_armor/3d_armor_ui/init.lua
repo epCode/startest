@@ -1,7 +1,7 @@
 -- support for i18n
 local S = minetest.get_translator(minetest.get_current_modname())
 local F = minetest.formspec_escape
-local has_technic = minetest.get_modpath("technic") ~= nil
+
 
 if not minetest.global_exists("unified_inventory") then
 	minetest.log("warning", "3d_armor_ui: Mod loaded but unused.")
@@ -14,10 +14,7 @@ if ui.sfinv_compat_layer then
 end
 
 armor:register_on_update(function(player)
-	local name = player:get_player_name()
-	if unified_inventory.current_page[name] == "armor" then
-		unified_inventory.set_inventory_formspec(player, "armor")
-	end
+	sfinv.set_player_inventory_formspec(player)
 end)
 
 unified_inventory.register_button("armor", {
@@ -48,14 +45,6 @@ unified_inventory.register_page("armor", {
 			"label[6.0,"..(fy + 0.5)..";"..F(S("Heal"))..":  "..armor.def[name].heal.."]"..
 			"listring[current_player;main]"..
 			"listring[detached:"..name.."_armor;armor]"
-		if armor.config.fire_protect then
-			formspec = formspec.."label[6.0,"..(fy + 1.0)..";"..
-				F(S("Fire"))..":  "..armor.def[name].fire.."]"
-		end
-		if has_technic then
-			formspec = formspec.."label[6.0,"..(fy + 1.5)..";"..
-				F(S("Radiation"))..":  "..armor.def[name].groups["radiation"].."]"
-		end
 		return {formspec=formspec}
 	end,
 })

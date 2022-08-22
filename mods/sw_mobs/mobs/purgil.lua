@@ -98,7 +98,7 @@ minetest.register_entity("sw_mobs:purgil",{
 	springiness=0,
 	buoyancy = 0.75,					-- portion of hitbox submerged
 	max_speed = 10,
-	planets = {"tattooine"},
+	planets = {"space"},
 	jump_height = 1.26,
 	view_range = 95,
 	lung_capacity = 100, 		-- seconds
@@ -122,7 +122,7 @@ minetest.register_entity("sw_mobs:purgil",{
 
 	-- dig on attack hitting
 	on_attack_hit=function(self, target)
-
+		--target:punch(self.object,1,self.attack)
 	end,
 
 	drops = {

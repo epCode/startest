@@ -113,9 +113,16 @@ armor = {
 	elements = {"head", "torso", "legs", "feet"},
 	physics = {"jump", "speed", "gravity"},
 	attributes = {"heal", "fire", "water", "feather"},
-	formspec = "image[2.5,0;2,4;armor_preview]"..
-		"list[current_player;main;0,4.7;8,1;]"..
-		"list[current_player;main;0,5.85;8,3;8]",
+	formspec =
+		"formspec_version[4]"..
+		"size[20,10]"..
+		"position[0.5,0.5]"..
+		"background[8.5,0;11.545,10;gui_formbg2.png]"..
+		"background[0,0;11.545,10;gui_formbg.png]"..
+		"image[2.5,0;2,4;armor_preview]"..
+		"list[current_player;main;0.9,4.75;8,1;]"..
+		"list[current_player;main;0.9,6;8,3;8]"..
+		"listcolors[#111111;#424242]",
 	def = armor_def,
 	textures = armor_textures,
 	default_skin = "character",
@@ -349,8 +356,8 @@ armor.update_player_visuals = function(self, player, texture, preview)
 	if not player then
 		return
 	end
-	local player_hard_model = armor.calculate_model(player)
-	player_api.set_model(player, player_hard_model)
+	local player_model = armor.calculate_model(player)
+	player_api.set_model(player, player_model)
 	player_api.set_textures(player, {
 		armor.calculate_texture(player),
 		texture,
@@ -521,6 +528,9 @@ armor.set_player_armor = function(self, player)
 	self.def[name].state = state
 	self.def[name].count = count
 	self:update_player_visuals(player, texture, preview)
+	if texture then
+		return texture
+	end
 end
 
 --- Action when armor is punched.
@@ -668,8 +678,8 @@ end
 --  @tparam ItemStack itemstack Armor item to be equipped.
 --  @treturn ItemStack Leftover item stack.
 armor.equip = function(self, player, itemstack)
-    local name, armor_inv = self:get_valid_player(player, "[equip]")
-    local armor_element = self:get_element(itemstack:get_name())
+  local name, armor_inv = self:get_valid_player(player, "[equip]")
+  local armor_element = self:get_element(itemstack:get_name())
 	if name and armor_element then
 		local index
 		for i=1, armor_inv:get_size("armor") do
@@ -688,6 +698,7 @@ armor.equip = function(self, player, itemstack)
 		self:set_player_armor(player)
 		self:save_armor_inventory(player)
 	end
+	sfinv.set_player_inventory_formspec(player)
 	return itemstack
 end
 
@@ -717,6 +728,7 @@ armor.unequip = function(self, player, armor_element)
 			self:run_callbacks("on_unequip", player, i, stack)
 			self:set_player_armor(player)
 			self:save_armor_inventory(player)
+			sfinv.set_player_inventory_formspec(player)
 			return
 		end
 	end
@@ -790,13 +802,24 @@ end
 --  @treturn string Formspec formatted string.
 armor.get_armor_formspec = function(self, name, listring)
 	if armor.def[name].init_time == 0 then
-		return "label[0,0;Armor not initialized!]"
+		--return "label[0,0;Armor not initialized!]"
 	end
 	local formspec = armor.formspec..
-		"list[detached:"..name.."_armor;armor;0,0.5;2,3;]"
+		"list[detached:"..name.."_armor;armor;0.9,2;10,1;]"
 	if listring == true then
-		formspec = formspec.."listring[current_player;main]"..
-			"listring[detached:"..name.."_armor;armor]"
+		local player = minetest.get_player_by_name(name)
+		local player_model = armor.calculate_model(player)
+		local player_texture = armor.calculate_texture(player)
+		local armor_texture = "blank.png"
+		if armor:set_player_armor(player) then
+			armor_texture = armor:set_player_armor(player)
+		else
+			armor_texture = "blank.png"
+		end
+		formspec = formspec..
+		"listring[current_player;main]"..
+		"listring[detached:"..name.."_armor;armor]"..
+		"model[11,0;10,10;character_preview;"..player_model..";"..player_texture..","..armor_texture..";0,180;false;true;1,31]"
 	end
 	formspec = formspec:gsub("armor_preview", armor.textures[name].preview)
 	formspec = formspec:gsub("armor_level", armor.def[name].level)
@@ -890,6 +913,7 @@ end
 --  @function armor:update_inventory
 --  @param player
 armor.update_inventory = function(self, player)
+
 	-- DEPRECATED: Legacy inventory support
 end
 
