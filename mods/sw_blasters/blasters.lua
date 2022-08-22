@@ -33,3 +33,28 @@ minetest.register_tool("sw_blasters:a295", {
 	inventory_image="sw_blasters_a295_inv.png",
 	groups={med_rifle = 1, cooling_speed = 1000, shots = 15, bullet_speed = 65, bullet_damage = 3, shot_interval = 0.2, cooldown_delay = 2, accuracy = 0.15, range=40},
 })
+
+
+minetest.register_craftitem("sw_blasters:blast_charge_small", {
+	description=("Small Blast Charge"),
+	wield_scale = {x = 1, y = 1, z = 1},
+  range=0,
+	inventory_image="sw_blasters_blast_charge_small.png",
+	groups={blast_charge=10},
+})
+
+minetest.register_craftitem("sw_blasters:blast_charge_med", {
+	description=("Medium Blast Charge"),
+	wield_scale = {x = 1, y = 1, z = 1},
+  range=0,
+	inventory_image="sw_blasters_blast_charge_med.png",
+	groups={blast_charge=20},
+})
+
+minetest.register_craftitem("sw_blasters:blast_charge_large", {
+	description=("Large Blast Charge"),
+	wield_scale = {x = 1, y = 1, z = 1},
+  range=0,
+	inventory_image="sw_blasters_blast_charge_large.png",
+	groups={blast_charge=30},
+})

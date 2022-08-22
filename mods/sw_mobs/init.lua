@@ -1,5 +1,5 @@
 -- Created by Xanthus using mobkit
-
+--[[
 cube_mobkit = {} -- includes altered functions similar to those found in mobkit (cube_mobkit.lq_jumpattack)
 cube_mobkit.mob_names = {} -- list of names used for spawning. add mob names to the list after registering
 cube_mobkit.DEFAULT_MELEE_RANGE = 1.5 -- how close the mob needs to be during melee attack to hit by default

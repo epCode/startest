@@ -1,46 +1,46 @@
 minetest.register_on_joinplayer(function(player)
-	sw_blasters.gun_stats[player] = {delay=0, pointing_at_shootable=false, venting=false, overheated=false, cooling_handle=0, cooling_delay=0}
+	sw_blasters.gun_stats[player] = {delay=0, pointing_at_shootable=false}
 	sw_blasters.shootable_hud[player] = nil
 	sw_blasters.zoom_hud[player] = nil
 end)
 
---function to control firing of blasters and cooling
+local function get_blast_pack(player)
+	local inv = player:get_inventory()
+	local arrow_stack, arrow_stack_id
+	for i=1, inv:get_size("main") do
+		local it = inv:get_stack("main", i)
+		if not it:is_empty() and minetest.get_item_group(it:get_name(), "blast_charge") ~= 0 then
+			arrow_stack = it
+			arrow_stack_id = i
+			break
+		end
+	end
+	return arrow_stack, arrow_stack_id, minetest.get_item_group(it:get_name(), "blast_charge")
+end
+--function to control firing of blasters
 local function blaster_shoot(player, blaster_name, wieldeditem, control, entity, gravity, textures, shoot_sound, shot_hear_distance)
 	--get blaster properties
 	local shots_default = minetest.get_item_group(blaster_name, "shots") + 2
 	local bullet_speed = minetest.get_item_group(blaster_name, "bullet_speed")
 	local damage = minetest.get_item_group(blaster_name, "bullet_damage")
 	local shot_interval = minetest.get_item_group(blaster_name, "shot_interval")
-	local cooldown_timeout = minetest.get_item_group(blaster_name, "cooldown_delay")
 	local accuracy = minetest.get_item_group(blaster_name, "accuracy")
 	--see if player is doing the right things with the right things to shoot
-	if wieldeditem:get_name() == blaster_name and sw_blasters.gun_stats[player].overheated==false then
+	if wieldeditem:get_name() == blaster_name then
+		if control.LMB then
+			local st,id,ch = get_blast_pack(player)
+			st:take_item()
+			inv:set_stack("main", id, st)
+			wieldeditem:add_wear(-(65535 / shots_default)*ch)
+		end
 		if wieldeditem:get_wear() < 65535 - 65535 / (shots_default/2) then
 			if control.RMB and sw_blasters.gun_stats[player].delay > shot_interval then
 				wieldeditem:add_wear(65535 / shots_default)
-				sw_blasters.gun_stats[player].venting=false
-				--shoot function
 				sw_blasters.shoot_entity(nil, player, wieldeditem, entity, bullet_speed, gravity, damage, textures, accuracy, 0, player:get_look_dir())
 				minetest.sound_play(shoot_sound, {pos=player:get_pos(), max_hear_distance=shot_hear_distance, pitch = math.random(90,120)/100}, true)
 				sw_blasters.gun_stats[player].delay = 0
-				sw_blasters.gun_stats[player].cooling_delay=0
 				player:set_wielded_item(wieldeditem)
 			end
-		--Make gun overheat if the last shot is taken
-		elseif wieldeditem:get_wear() >= 65535 - 65535 / (shots_default/2) and sw_blasters.gun_stats[player].overheated==false then
-			minetest.sound_play("sw_blasters_overheated", {pos=player:get_pos(), max_hear_distance=8, pitch = math.random(90,120)/100}, true)
-			sw_blasters.gun_stats[player].overheated=true
-		end
-		--let the player cool thier gun or automatically
-		if (control.LMB or sw_blasters.gun_stats[player].cooling_delay > cooldown_timeout) and sw_blasters.gun_stats[player].venting==false and wieldeditem:get_wear() > 0 then
-			if control.LMB then
-				wieldeditem:set_wear(65535 - 65535 / (shots_default/2)-1)
-				player:set_wielded_item(wieldeditem)
-			end
-			minetest.sound_play("sw_blasters_cooling", {pos=player:get_pos(), max_hear_distance=8, pitch = math.random(90,120)/100}, true)
-			sw_blasters.gun_stats[player].venting=true
-			sw_blasters.gun_stats[player].delay=-0.7
-			sw_blasters.gun_stats[player].cooling_handle = minetest.sound_play("sw_blasters_cooling_long", {pos=player:get_pos(), max_hear_distance=8, pitch = math.random(90,120)/100}, false)
 		end
 	end
 end
@@ -89,7 +89,6 @@ minetest.register_on_leaveplayer(function(player)
 	sw_blasters.zoom_hud[player] = nil
 end)
 
-
 minetest.register_globalstep(function(dtime)
 
 
@@ -97,7 +96,6 @@ minetest.register_globalstep(function(dtime)
 
 		if sw_blasters.gun_stats[player] then
 			sw_blasters.gun_stats[player].delay = sw_blasters.gun_stats[player].delay + dtime
-			sw_blasters.gun_stats[player].cooling_delay = sw_blasters.gun_stats[player].cooling_delay + dtime
 		end
 
     local control = player:get_player_control()
@@ -105,13 +103,6 @@ minetest.register_globalstep(function(dtime)
     local wieldeditem = player:get_wielded_item()
     local type = ""
 
-		if sw_blasters.wieldeditem[player] and sw_blasters.wieldeditem[player]:get_name() ~= wieldeditem:get_name() then
-			if sw_blasters.gun_stats[player].cooling_handle then
-				minetest.sound_stop(sw_blasters.gun_stats[player].cooling_handle)
-			end
-			sw_blasters.gun_stats[player].cooling_delay=0
-			sw_blasters.gun_stats[player].venting=false
-		end
 		sw_blasters.wieldeditem[player] = wieldeditem
 
 		if sw_blasters.object_timer[player] then
@@ -136,26 +127,6 @@ minetest.register_globalstep(function(dtime)
 			type = "heavy_short"
 		else
 			type = "other"
-		end
-
-		--check for blaster being cooled
-		if sw_blasters.gun_stats[player].venting==true and wieldeditem:get_wear() > 0 and type ~= "other" then
-			wieldeditem:add_wear(-minetest.get_item_group(wieldeditem:get_name(), "cooling_speed"))
-			player:set_wielded_item(wieldeditem)
-		elseif wieldeditem:get_wear() < 1 and sw_blasters.gun_stats[player].venting==true then
-			if sw_blasters.gun_stats[player].cooling_handle then
-				minetest.sound_stop(sw_blasters.gun_stats[player].cooling_handle)
-				minetest.sound_play("sw_blasters_cooling_finished", {pos=player:get_pos(), max_hear_distance=5, pitch = math.random(90,120)/100}, true)
-			end
-			sw_blasters.gun_stats[player].venting=false
-		end
-
-		--Check to see if we overheated
-		if sw_blasters.gun_stats[player].overheated==true and wieldeditem:get_wear() > 0 and type ~= "other" then
-			wieldeditem:add_wear(-300)
-			player:set_wielded_item(wieldeditem)
-		elseif wieldeditem:get_wear() < 1 and type ~= "other" then
-			sw_blasters.gun_stats[player].overheated=false
 		end
 
 

@@ -34,7 +34,8 @@ local SHIP_ENTITY={
 	_roll=0,
 	_textures={},
 	_hyperdrive=true,
-	_hyperspace_invi_timer=0
+	_hyperspace_invi_timer=0,
+	_shoot_timer=0,
 }
 
 
@@ -58,6 +59,8 @@ function SHIP_ENTITY.on_step(self, dtime)
 	local rot = self.object:get_rotation()
 	local look_dir = vector.rotate(vector.new(0,0,1), rot)
 
+	self._shoot_timer=self._shoot_timer+dtime
+
 	if self._hyperspace_invi_timer < 3 then
 		self._hyperspace_invi_timer = self._hyperspace_invi_timer + dtime
 	end
@@ -68,19 +71,21 @@ function SHIP_ENTITY.on_step(self, dtime)
 		self.object:set_velocity({x=vel.x*0.93,y=vel.y*0.93,z=vel.z*0.93})
 	end
 	if abs(vel.x)+abs(vel.y)+abs(vel.z)<self._speed_max then
-		self.object:add_velocity(vector.multiply(look_dir, (self._throttle/5)))
-	end
-
-	if self._last_vel then
-		if abs(vel.x - self._last_vel.x) > 10 or abs(vel.y - self._last_vel.y) > 10 or abs(vel.z - self._last_vel.z) > 10 then
-			if self._hyperspace_invi_timer > 3 then
-				self._destroyed = true
+		local add_vel = vector.new(0,0,0)
+		if self._driver then
+			local control = self._driver:get_player_control()
+			if control.left and control.right then
+				add_vel = vector.new(0,0.6,0)
 			end
 		end
+		self.object:add_velocity(vector.add(vector.multiply(look_dir, (self._throttle/5)), add_vel))
 	end
+
 
 
 	if self._driver then
+
+		local dname = self._driver:get_player_name()
 
 		self._driver:set_pos(self.object:get_pos())
 
@@ -92,41 +97,69 @@ function SHIP_ENTITY.on_step(self, dtime)
 			multidimensions.form(self._driver,self.object)
 		end
 
+		if control.aux1 and not (control.left and control.right) and self._shoot_timer>0.2 then
+			local offsets = {vector.new(2.7,-0.9,0), vector.new(-2.7,-0.9,0), vector.new(2.7,-2.8,0), vector.new(-2.7,-2.8,0)}
+			for i_=1, #offsets do
+				self._shoot_timer = 0
+				local offset=vector.rotate_around_axis(offsets[i_], vector.new(0,1,0), self.object:get_yaw())
+				sw_blasters.shoot_entity(nil, self._driver, self._driver:get_wielded_item(), "sw_blasters:blast_entity", 50, 0, 20, {"sw_blasters_blast_red.png"}, 0, 0, look_dir, {x=10,y=10}, vector.add(self.object:get_pos(), offset))
+			end
+		end
+
 		local dtime_rounded = round(dtime, 1)
 		if dtime_rounded < 0.1 then
 			dtime_rounded = 0.1
 		end
-		local look_offset_yaw = self._driver:get_look_horizontal()-rot.y
-		local look_offset_pitch = ((self._driver:get_look_vertical()*2-rot.x)*.5+rot.x)*-1
-		if abs(look_offset_yaw) < 4 then
-			look_offset_yaw = look_offset_yaw*((abs(vel.x)+abs(vel.y)+abs(vel.z))/self._speed_max*dtime_rounded*self._yaw_snap)
+		dtime_rounded=dtime_rounded*10
+		local ctrl_yaw = 0
+		local ctrl_pitch = 0
+		local ctrl_roll = 0
+
+		if not sw_ships.ship_vector_vel[dname] then
+			sw_ships.ship_vector_vel[dname] = vector.new(0,0,0)
 		end
 
+		local ctrl_yaw = 0
+		if not (control.left and control.right) then
+			if control.left then
+				ctrl_yaw = -1
+			elseif control.right then
+				ctrl_yaw = 1
+			end
+		end
+		if control.up then
+			ctrl_pitch = 1
+		elseif control.down then
+			ctrl_pitch = -1
+		end
+		local ship_rot_vel = sw_ships.ship_vector_vel[dname]
 
-		if control.aux1 and not (control.left and control.right) then
-			sw_blasters.shoot_entity(nil, self._driver, self._driver:get_wielded_item(), "sw_blasters:blast_entity", 90, 0, 20, {"sw_blasters_blast_red.png"}, 0, 0, look_dir)
+
+		ship_rot_vel.y=(ship_rot_vel.y+(0.01*-ctrl_yaw))
+		ship_rot_vel.x=(ship_rot_vel.x+(0.01*-ctrl_pitch))
+		ship_rot_vel.z=-ship_rot_vel.y*2
+
+		if minetest.registered_nodes[minetest.get_node(vector.add(self.object:get_pos(), vector.new(0,(self.collisionbox[2]-0.2),0))).name].walkable then
+			rot.x=ship_rot_vel.x*((math.abs(vel.x)+math.abs(vel.z))*.05)
+			rot.z=ship_rot_vel.z*((math.abs(vel.x)+math.abs(vel.z))*.05)
 		end
 
-		self.object:set_rotation({x=look_offset_pitch*((abs(vel.x)+abs(vel.y)+abs(vel.z))/self._speed_max), y=look_offset_yaw+rot.y, z=look_offset_yaw*-15*(self._throttle/self._tilt_devider)+self._roll})
+		--self.object:set_properties({automatic_rotate=ship_rot_vel.y*20})
+		self.object:set_rotation({x=ship_rot_vel.x*dtime_rounded+rot.x, y=ship_rot_vel.y*dtime_rounded+rot.y, z=ship_rot_vel.z*dtime_rounded+rot.z*0.9})
+
+		sw_ships.ship_vector_vel[dname] = vector.multiply(sw_ships.ship_vector_vel[dname], 0.9)
 
 		if self._throttle > 3 and self.object:get_properties().textures ~= {self._textures[1].."_jet.png"} then
-			self.object:set_properties({textures={self._textures[1].."_jet.png"}})
+			--self.object:set_properties({textures={self._textures[1].."_jet.png"}})
 		elseif self.object:get_properties().textures ~= {self._textures[1]..".png"} then
-			self.object:set_properties({textures={self._textures[1]..".png"}})
+			--self.object:set_properties({textures={self._textures[1]..".png"}})
 		end
 
-		if control.up and self._throttle<self._throttle_max then
+		if control.jump and self._throttle<self._throttle_max then
 			self._throttle = self._throttle+0.3
-		elseif control.down and self._throttle>0 then
+		elseif control.sneak and self._throttle>0 then
 			self._throttle = self._throttle-0.1
 		end
-
-		--[[
-		if control.left then
-			self._roll = self._roll+0.1
-		elseif control.right then
-			self._roll = self._roll-0.1
-		end]]
 
 	end
 	if self._destroyed then
