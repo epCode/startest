@@ -12,28 +12,28 @@ local function get_blast_pack(player)
 	return arrow_stack, arrow_stack_id, minetest.get_item_group(it:get_name(), "blast_charge")
 end
 --function to control firing of blasters
-local function blaster_shoot(player, blaster_name, wieldeditem, control, entity, gravity, textures, shoot_sound, shot_hear_distance)
+local function blaster_shoot(player, def, blaster_name, wieldeditem, control, entity, gravity, textures, shoot_sound, shot_hear_distance)
 	--get blaster properties
-	local shots_default = minetest.get_item_group(blaster_name, "shots") + 2
-	local bullet_speed = minetest.get_item_group(blaster_name, "bullet_speed")
-	local damage = minetest.get_item_group(blaster_name, "bullet_damage")
-	local shot_interval = minetest.get_item_group(blaster_name, "shot_interval")
-	local accuracy = minetest.get_item_group(blaster_name, "accuracy")
+	local shots_default = minetest.get_item_group(def.blaster_name, "shots") + 2
+	local bullet_speed = minetest.get_item_group(def.blaster_name, "bullet_speed")
+	local damage = minetest.get_item_group(def.blaster_name, "bullet_damage")
+	local shot_interval = minetest.get_item_group(def.blaster_name, "shot_interval")
+	local accuracy = minetest.get_item_group(def.blaster_name, "accuracy")
 	--see if player is doing the right things with the right things to shoot
-	if wieldeditem:get_name() == blaster_name then
-		if control.LMB then
+	if def.wieldeditem:get_name() == def.blaster_name then
+		if def.control.LMB then
 			local st,id,ch = get_blast_pack(player)
 			st:take_item()
 			inv:set_stack("main", id, st)
-			wieldeditem:add_wear(-(65535 / shots_default)*ch)
+			def.wieldeditem:add_wear(-(65535 / shots_default)*ch)
 		end
-		if wieldeditem:get_wear() < 65535 - 65535 / (shots_default/2) then
-			if control.RMB and sw_blasters.gun_stats[player].delay > shot_interval then
-				wieldeditem:add_wear(65535 / shots_default)
-				sw_blasters.shoot_entity(nil, player, wieldeditem, entity, bullet_speed, gravity, damage, textures, accuracy, 0, player:get_look_dir())
-				minetest.sound_play(shoot_sound, {pos=player:get_pos(), max_hear_distance=shot_hear_distance, pitch = math.random(90,120)/100}, true)
+		if def.wieldeditem:get_wear() < 65535 - 65535 / (shots_default/2) then
+			if def.control.RMB and sw_blasters.gun_stats[player].delay > shot_interval then
+				def.wieldeditem:add_wear(65535 / shots_default)
+				sw_blasters.shoot_entity(nil, player, def.wieldeditem, def.entity, bullet_speed, def.gravity, damage, def.textures, accuracy, 0, player:get_look_dir())
+				minetest.sound_play(def.shoot_sound, {pos=player:get_pos(), max_hear_distance=def.shot_hear_distance, pitch = math.random(90,120)/100}, true)
 				sw_blasters.gun_stats[player].delay = 0
-				player:set_wielded_item(wieldeditem)
+				player:set_wielded_item(def.wieldeditem)
 			end
 		end
 	end
@@ -212,18 +212,63 @@ minetest.register_globalstep(function(dtime)
     end
 
 		--Check to see if player is shooting, if so, spawn the respective blasts.
-		--TODO: this shouldn't be on a server tick like this in my opinion.
+		--TODO: this is so janky
 		if player:get_hp() > 0 then
 			--e_11
-			blaster_shoot(player, "sw_blasters:e_11", wieldeditem, control, "sw_blasters:blast_entity", 0, {"sw_blasters_blast_red.png"}, "sw_blasters_e_11", 26)
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:e_11",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_e_11",
+				shot_hear_distance = 26,
+			})
 			--FMWB-10
-			blaster_shoot(player, "sw_blasters:fwmb10", wieldeditem, control, "sw_blasters:blast_entity", 0, {"sw_blasters_blast_red.png"}, "sw_blasters_fmwb10", 23)
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:fwmb10",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_fmwb10",
+				shot_hear_distance = 23,
+			})
 			--NT-242
-			blaster_shoot(player, "sw_blasters:nt242", wieldeditem, control, "sw_blasters:blast_entity", 0, {"sw_blasters_blast_red.png"}, "sw_blasters_nt242", 30)
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:nt242",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_nt242",
+				shot_hear_distance = 30,
+			})
 			--DH-17
-			blaster_shoot(player, "sw_blasters:dh17", wieldeditem, control, "sw_blasters:blast_entity", 0, {"sw_blasters_blast_red.png"}, "sw_blasters_dh17", 20)
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:dh17",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_dh17",
+				shot_hear_distance = 20,
+			})
 			--A-295
-			blaster_shoot(player, "sw_blasters:a295", wieldeditem, control, "sw_blasters:blast_entity", 0, {"sw_blasters_blast_red.png"}, "sw_blasters_a295", 20)
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:a295",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_a295",
+				shot_hear_distance = 20,
+			})
 		end
   end
 end)
