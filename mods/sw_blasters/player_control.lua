@@ -1,9 +1,3 @@
-minetest.register_on_joinplayer(function(player)
-	sw_blasters.gun_stats[player] = {delay=0, pointing_at_shootable=false}
-	sw_blasters.shootable_hud[player] = nil
-	sw_blasters.zoom_hud[player] = nil
-end)
-
 local function get_blast_pack(player)
 	local inv = player:get_inventory()
 	local arrow_stack, arrow_stack_id
@@ -47,12 +41,18 @@ end
 
 ---------Hud effect functions-----
 
+minetest.register_on_joinplayer(function(player)
+	sw_blasters.gun_stats[player] = {delay=0, pointing_at_shootable=false}
+	sw_blasters.shootable_hud[player] = nil
+	sw_blasters.zoom_hud[player] = nil
+end)
+
 function sw_blasters.add_zoom_hud(player)
 	sw_blasters.zoom_hud[player] = {
 		zoom_blur = player:hud_add({
 			hud_elem_type = "image",
 			position = {x = 0.505, y = 0.5},
-			scale = {x = -101, y = -101},
+			scale = {x = 5, y = 5},
 			text = "sw_blasters_zoom_e11.png",
 			z_index = -100,
 		}),

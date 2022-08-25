@@ -172,7 +172,7 @@ minetest.register_entity(":__builtin:item", {
 		end
 
     local kickspeed = 1
-    local oriantatioin = 0
+    local oriantatioin = self.object:get_rotation().z
     if minetest.registered_nodes[self.itemstring_name] and minetest.registered_nodes[self.itemstring_name].drawtype ~= "plantlike" and minetest.registered_nodes[self.itemstring_name].drawtype ~= "torchlike" then
       local oriantatioin = 1.57
       kickspeed = 0.1
@@ -189,7 +189,7 @@ minetest.register_entity(":__builtin:item", {
 
     if math.abs(self.object:get_velocity().y) < 0.2 and not self._landed then
 --      self._rotating = vector.new(0,0,0)
-      self.object:set_rotation({x=1.57, y=oriantatioin, z=self.object:get_rotation().z})
+      self.object:set_rotation({x=math.rad(-0), y=oriantatioin, z=0})
       self._landed=true
     elseif math.abs(self.object:get_velocity().y) > 0.2 then
       self._landed=false

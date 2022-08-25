@@ -18,42 +18,77 @@ local shiplist = {
 	"+0,+0,+4,sw_core_items:sandstone_desert_pale_with_brown_band_top",
 
 }
-sw_ships.register_ship("sw_ships:x_wing", 10, 30, {"sw_ships_x_wing"}, "sw_ships_x_wing.b3d", {x=42,y=42}, 13, 0.5, {-1, -1.5, -1, 1, 0.5, 1}, shiplist)
-
-minetest.register_node("sw_ships:x_wing", {
-	description=("X-Wing"),
-	stack_max=1,
-	use_texture_alpha = "blend",
-	wield_scale = {x=1,y=1,z=1},
-	paramtype = "light",
-	drawtype = "mesh",
-	mesh="sw_ships_x_wing.b3d",
-	tiles = {"sw_ships_x_wing.png"},
-	on_place = function(itemstack, placer, pointed_thing)
-		minetest.add_entity(vector.add(pointed_thing.above, {x=0,y=1,z=0}), "sw_ships:x_wing")
-		itemstack:take_item()
-		return itemstack
-	end,
+sw_ships.register_ship("sw_ships:x_wing", {
+	description=("X Wing"),
+	max_throttle = 10,
+	max_speed = 30,
+	textures = {"sw_ships_x_wing"},
+	mesh = "sw_ships_x_wing.b3d",
+	visual_size = {x=40,y=40},
+	turn_roll_amount = 13,
+	collisionbox = {-1, -1, -1, 1, 1, 1},
+	ship_build_schem = shiplist,
+	thruster_size=10,
+	thruster_length=0.1,
+	thruster_textures={"sw_ships_jet_anim_red_lr.png"},
+	thruster_positions = {vector.new(1,-0.5,-2.3), vector.new(-1,-0.5,-2.3), vector.new(1,.3,-2.3), vector.new(-1,.3,-2.3)},
+	blast_points = {vector.new(2.7,-0.9,0), vector.new(-2.7,-0.9,-1), vector.new(2.7,-2.8,0), vector.new(-2.7,-2.8,0)},
 })
 
-local shiplist2 = {"sw_ships:yg_8018_engine_s12", "+0,+2,-1,sw_core_items:sandstone_desert_pale"}
 
-sw_ships.register_ship("sw_ships:tie_fighter", 15, 40, {"sw_ships_tie_fighter"}, "sw_ships_tie_fighter.b3d", {x=42,y=42}, 16, 1, {-1.5, -2, -1.5, 1.5, 2, 1.5}, shiplist2)
+shiplist = {"sw_ships:yg_8018_engine_s12", "+0,+2,-1,sw_core_items:sandstone_desert_pale"}
 
-minetest.register_node("sw_ships:tie_fighter", {
-	description=("Tie Fighter"),
-	stack_max=1,
-	use_texture_alpha = "blend",
-	wield_scale = {x=1,y=1,z=1},
-	paramtype = "light",
-	drawtype = "mesh",
-	mesh="sw_ships_tie_fighter.b3d",
-	tiles = {"sw_ships_tie_fighter.png"},
-	--tiles={"sw_ships_tie_fighter.png"},
-	--inventory_image="sw_ships_tie_fighter_inv.png",
-	on_place = function(itemstack, placer, pointed_thing)
-		minetest.add_entity(vector.add(pointed_thing.above, {x=0,y=2,z=0}), "sw_ships:tie_fighter")
-		itemstack:take_item()
-		return itemstack
-	end,
+sw_ships.register_ship("sw_ships:tie_fighter", {
+	description=("Tie fighter"),
+	max_throttle = 15,
+	max_speed = 40,
+	textures = {"sw_ships_tie_fighter"},
+	mesh = "sw_ships_tie_fighter.b3d",
+	visual_size = {x=42,y=42},
+	turn_roll_amount = 13,
+	collisionbox = {-1.5, -2, -1.5, 1.5, 2, 1.5},
+	ship_build_schem = shiplist,
+	thruster_length=0.1,
+	thruster_size=4,
+	thruster_textures={"red.png"},
+	thruster_positions = {},
+	blast_points = {vector.new(0.4,-2,0), vector.new(-0.4,-2,0)},
+})
+
+shiplist = {"sw_ships:yg_8018_engine_s12", "+0,+2,-1,sw_core_items:sandstone_desert_pale"}
+
+sw_ships.register_ship("sw_ships:a_wing", {
+	description=("A Wing"),
+	max_throttle = 15,
+	max_speed = 40,
+	textures = {"sw_ships_a_wing"},
+	mesh = "sw_ships_a_wing.b3d",
+	visual_size = {x=20,y=20},
+	turn_roll_amount = 13,
+	collisionbox = {-1.5, -0.4, -1.5, 1.5, 0.7, 1.5},
+	ship_build_schem = shiplist,
+	thruster_length=0.1,
+	thruster_size=4,
+	thruster_textures={"red.png"},
+	thruster_positions = {},
+	blast_points = {vector.new(0.4,-2,0), vector.new(-0.4,-2,0)},
+})
+
+shiplist = {"sw_ships:yg_8018_engine_s12", "+0,+2,-1,sw_core_items:sandstone_desert_pale"}
+
+sw_ships.register_ship("sw_ships:star_destroyer", {
+	description=("Star Destroyer"),
+	max_throttle = 15,
+	max_speed = 40,
+	textures = {"sw_ships_destroyer"},
+	mesh = "sw_ships_star_destroyer.b3d",
+	visual_size = {x=50,y=50},
+	turn_roll_amount = 13,
+	collisionbox = {-20, -20, -20, 20, 20, 20},
+	ship_build_schem = shiplist,
+	thruster_length=0.1,
+	thruster_size=4,
+	thruster_textures={"red.png"},
+	thruster_positions = {},
+	blast_points = {vector.new(0.4,-2,0), vector.new(-0.4,-2,0)},
 })

@@ -1,6 +1,7 @@
 sw_ships = {
   hyperspace_invi_timer={},
-  ship_vector_vel={}
+  ship_vector_vel={},
+  throttle_hud={}
 }
 
 local path = minetest.get_modpath("sw_ships")

@@ -20,11 +20,11 @@ local BLAST_ENTITY={
 	_shooter=nil,	-- ObjectRef of player or mob who shot it
   _hit_wall=false,
   _destroyed=false,
-	glow = minetest.LIGHT_MAX,
 	_bounces=5,
 	_lifetimer=0,
 	_player_hittable=nil,
 	_node_in_way={x=0,y=0,z=0},
+	light_source=minetest.LIGHT_MAX,
 }
 
 local abs = math.abs
