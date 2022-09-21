@@ -11,7 +11,7 @@ minetest.register_tool("sw_blasters:e_11", {
 		shot_interval = 0.3,
 		cooldown_delay = 2.2,
 		accuracy = 0.1,
-		range=37
+		range=40
 	},
 })
 minetest.register_tool("sw_blasters:fwmb10", {
@@ -78,7 +78,22 @@ minetest.register_tool("sw_blasters:a295", {
 		range=40
 	},
 })
-
+minetest.register_tool("sw_blasters:dc17", {
+	description=("dc17 Blaster Pistol"),
+	wield_scale = {x = 1.5, y = 1.5, z = 1.5},
+  range=0,
+	inventory_image="sw_blasters_dc17_inv.png",
+	groups={med_rifle = 1,
+		cooling_speed = 0,
+		shots = 10,
+		bullet_speed = 65,
+		bullet_damage = 2,
+		shot_interval = 0.3,
+		cooldown_delay = 2,
+		accuracy = 1,
+		range=20
+	},
+})
 
 minetest.register_craftitem("sw_blasters:blast_charge_small", {
 	description=("Small Blast Charge"),

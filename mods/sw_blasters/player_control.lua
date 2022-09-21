@@ -20,7 +20,8 @@ local function blaster_shoot(player, def, blaster_name, wieldeditem, control, en
 	local shot_interval = minetest.get_item_group(def.blaster_name, "shot_interval")
 	local accuracy = minetest.get_item_group(def.blaster_name, "accuracy")
 	--see if player is doing the right things with the right things to shoot
-	if def.wieldeditem:get_name() == def.blaster_name then
+
+		if def.wieldeditem:get_name() == def.blaster_name then
 		if def.control.LMB then
 			local st,id,ch = get_blast_pack(player)
 			st:take_item()
@@ -267,6 +268,17 @@ minetest.register_globalstep(function(dtime)
 				gravity = 0,
 				textures = {"sw_blasters_blast_red.png"},
 				shoot_sound = "sw_blasters_a295",
+				shot_hear_distance = 20,
+			})
+			--dc17
+			blaster_shoot(player, {
+				blaster_name = "sw_blasters:dc17",
+				wieldeditem = wieldeditem,
+				control = control,
+				entity = "sw_blasters:blast_entity",
+				gravity = 0,
+				textures = {"sw_blasters_blast_red.png"},
+				shoot_sound = "sw_blasters_dc17",
 				shot_hear_distance = 20,
 			})
 		end

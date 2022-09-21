@@ -96,27 +96,27 @@ sfinv.register_page("sfinv:crafting", {
 
 				"image[16,1;3,0.9;player_species_rodian.png^[colorize:#5f5f5f:255]"..
 				"image[18.8,1.1;0.1,0.7;player_species_rodian.png^[colorize:"..sfinv.num_to_color(meta:get("repGAMEminingguild"))..":255]"..
-				"label[18.2,1.5;"..meta:get("repGAMEminingguild").."]"..
+				"label[19.3,1.5;"..meta:get("repGAMEminingguild").."]"..
 				"label[16.2,1.5;Mining Guild:]"..
 
 				"image[16,2;3,0.9;player_species_rodian.png^[colorize:#5f5f5f:255]"..
 				"image[18.8,2.1;0.1,0.7;player_species_rodian.png^[colorize:"..sfinv.num_to_color(meta:get("repGAMEtransportguild"))..":255]"..
-				"label[18.2,2.5;"..meta:get("repGAMEtransportguild").."]"..
+				"label[19.3,2.5;"..meta:get("repGAMEtransportguild").."]"..
 				"label[16.2,2.5;Transport Guild:]"..
 
 				"image[16,3;3,0.9;player_species_rodian.png^[colorize:#5f5f5f:255]"..
 				"image[18.8,3.1;0.1,0.7;player_species_rodian.png^[colorize:"..sfinv.num_to_color(meta:get("repGAMEtheempire"))..":255]"..
-				"label[18.2,3.5;"..meta:get("repGAMEtheempire").."]"..
+				"label[19.3,3.5;"..meta:get("repGAMEtheempire").."]"..
 				"label[16.2,3.5;The Empire:]"..
 
 				"image[16,4;3,0.9;player_species_rodian.png^[colorize:#5f5f5f:255]"..
 				"image[18.8,4.1;0.1,0.7;player_species_rodian.png^[colorize:"..sfinv.num_to_color(meta:get("repGAMErebels"))..":255]"..
-				"label[18.2,4.5;"..meta:get("repGAMErebels").."]"..
+				"label[19.3,4.5;"..meta:get("repGAMErebels").."]"..
 				"label[16.2,4.5;Rebel Aliance:]"..
 
 				"image[16,5;3,0.9;player_species_rodian.png^[colorize:#5f5f5f:255]"..
 				"image[18.8,5.1;0.1,0.7;player_species_rodian.png^[colorize:"..sfinv.num_to_color(meta:get("repGAMEbounty"))..":255]"..
-				"label[18.2,5.5;"..meta:get("repGAMEbounty").."]"..
+				"label[19.3,5.5;"..meta:get("repGAMEbounty").."]"..
 				"label[16.2,5.5;Bounty Hunters:]", true)
 	end
 })
