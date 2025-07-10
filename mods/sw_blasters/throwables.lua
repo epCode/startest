@@ -14,6 +14,7 @@ local THERMAL_DETONATOR={
       timer_left = nil
     end
 		local bomb = sw_blasters.shoot_entity(true, user, itemstack, "sw_blasters:detonator_entity", 30, 9.81, 0, {"sw_blasters_thermal_detonator.png"}, 0, timer_left, user:get_look_dir())
+		if not bomb then return end
 		bomb:get_luaentity()._power = 4
 		return itemstack
   end,

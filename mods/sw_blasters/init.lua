@@ -26,6 +26,7 @@ function sw_blasters.shoot_entity(take_item, thrower, itemstack, thrown_thing, s
 	local player_pos = thrower_pos or thrower:get_pos()
 	local arrow = minetest.add_entity({x=player_pos.x, y=player_pos.y+1.4, z=player_pos.z}, thrown_thing)
  	local le = arrow:get_luaentity()
+	if not le then return end
  	le._damage = damage
  	le.textures = textures
  	le._bomb_timer = timer
